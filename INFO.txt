@@ -1,0 +1,6 @@
+seed: a troll and a dog
+autotracker: 133813bf7a05b445cef47d593574761513e6f41f
+jsfxr: 2e86e3a72c0ed2601e9b3e2e820fb30bd896451a
+chipvolver: 53b9752365272d565b3ede03e251816005b14d47
+pdvst-fx: acca66f9422e4ed0a83d921be2f2c63126434fdd
+command: ./maketrack.hy "a troll and a dog"
