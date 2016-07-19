@@ -209,10 +209,10 @@
   (let [[pattern
          {"oldParams" true
           "wave_type" (r.choice [0 1])
-          "p_env_attack" (if (r.choice [0 0 0 0 1]) (r.random) 0)
+          "p_env_attack" (if (r.choice [0 0 0 0 1]) (* 0.5 (r.random)) 0)
           "p_env_sustain" (r.random)
           "p_env_punch" (r.random)
-          "p_env_decay" (r.random)
+          "p_env_decay" (+ (* (r.random) 0.9) 0.1)
           "p_base_freq" (if (= range "hi") 0.2477 0.1737)
           "p_freq_limit" 0
           "p_freq_ramp" 0
@@ -226,7 +226,7 @@
           "p_repeat_speed" 0
           "p_pha_offset" 0
           "p_pha_ramp" 0
-          "p_lpf_freq" (r.choice [0 (* (r.random) (r.random))])
+          "p_lpf_freq" (r.choice [1 (* (r.random) (r.random))])
           "p_lpf_ramp" (- (* (r.random) 2) 1)
           "p_lpf_resonance" (r.random)
           "p_hpf_freq" (r.choice [0 0 0 (r.random)])
@@ -237,7 +237,7 @@
     (print (json.dumps pattern)) pattern))
 
 (defn choose-bleep-sample [itf range]
-  (let [[bleep-style (random.choice [0 0 0 0 0 1 2 2])]]
+  (let [[bleep-style (random.choice [0 0 0 0 0 0 0 0 0 1 2])]]
     (print "Bleep style:" (get ["sfxr" "evolved" "c64"] bleep-style) range)
     ; jsfxr make-bleep type
     (cond
