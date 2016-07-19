@@ -1,8 +1,8 @@
 #!/usr/bin/env hy
 
 ; TODO: 
-; * shuffle pyramid fx
-; * bridge groups build-up/break-down
+; * arp
+; * fills (fill sequence + random selection)
 
 (import os)
 (import sys)
@@ -261,10 +261,10 @@
     (fn [itf seed filename seed-hash]
       (setv itf.tempo (random.randint 175 185))
       (print itf.tempo "BPM")
-      (let [[vox-sets (list-comp d [d (os.listdir "acapellas")] (os.path.isdir (os.path.join "acapellas" d)))]
-            [vox-sample-folder (os.path.join "acapellas" (random.choice vox-sets))]
-            [vox-sample-list (list-comp (os.path.join vox-sample-folder f) [f (os.listdir vox-sample-folder)])]
-            
+      (let [[vox-sets (and (os.path.isdir "acapellas") (list-comp d [d (os.listdir "acapellas")] (os.path.isdir (os.path.join "acapellas" d))))]
+            [vox-sample-folder (and vox-sets (os.path.join "acapellas" (random.choice vox-sets)))]
+            [vox-sample-list (and vox-sample-folder (list-comp (os.path.join vox-sample-folder f) [f (os.listdir vox-sample-folder)]))]
+
             [samples-drums (sum (list-comp [(itf.smp_add (Sample_File :name (% "bassdrum-evolved-%d" x) :filename (sfxr-genetics "./sfxr-drums/bassdrum" (% "bassdrum-%d" x))))
                                             (itf.smp_add (Sample_File :name (% "snaredrum-evolved-%d" x) :filename (sfxr-genetics "./sfxr-drums/snare" (% "snaredrum-%d" x))))] [x (range 8)]) [])]
             [sample-break (random.choice ["amen.wav" "think.wav"])]
@@ -286,7 +286,7 @@
             [notes-sets [notes-set (transform-notes-flip notes-set) (transform-notes-multiply notes-set)]]
             [[sample-melody sample-melody-pitch] (choose-bleep-sample itf "hi")]
             [[sample-bass sample-bass-pitch] (choose-bleep-sample itf "lo")]
-            
+
             [melody-pattern (random.choice [[0 0 0 0 1 1 1 1 0 0 0 0 2 2 2 2]
                                             [0 0 1 1 0 0 1 1 2 2 2 2]])]
             [breaks-pattern [0 0 0 0 1 1 1 1 2 2 2 2 1 1 1 1]]
@@ -295,7 +295,7 @@
                                          [0 0 1 1 0 0 2 2]
                                          [2 2 1 1 0 0 1 1 0 0 2 2]
                                          [1 1 1 1 0 0 0 0]])]
-            
+
             [melody-fns-main (list-comp (make-melody-fn sample-melody (+ sample-melody-pitch root-note) (get sequences x) (get octave-sequences x) (get notes-sets x)
                                                         :pace 4
                                                         :volume 40
@@ -306,26 +306,27 @@
                                                         :octave-wander-probability (if (< (random.random) 0.333) (* (random.random) 0.25) 0)) [x (range 3)])]
             [breaks-fns (list-comp (make-breaks-fn sample-chunks-break (get-wrapped samples-drums (* x 2)) (get-wrapped  samples-drums (+ (* x 2) 1)) :break-pitch (int (math.floor break-note)) :seed (random.random)) [x (range 3)])]
             [weirdos-fns (list-comp (make-random-placement-fn (slice samples-weirdos (* x 3) (+ (* x 3) 3)) :volume 48 :seed (random.random) :number-per-pattern-segment 2 :probability 0.9) [x (range 3)])]
-            [vox-fns (+ (list-comp (make-vox-fn (partial choose-vox-sample itf (random.sample vox-sample-list 30) {} (random.Random (* (random.random) (+ x 1))))) [x (range 2)])
+            [vox-fns (+ (list-comp (make-vox-fn (partial choose-vox-sample itf (if vox-sample-list (random.sample vox-sample-list 30)) {} (random.Random (* (random.random) (+ x 1))))) [x (range 2)])
                        [(make-pass-fn)])]
-            
+
             [drop-groups (sorted [[1 5 6 7] [1 5 6] [1 4] [1 6] [0 1] [0 1 3] [0 5 6 7] [0 3 4]] :key (fn [x] (len x)))]
             [never-drop [2]]
-            
+
             [master-key (if (< (random.random) 0.6) Key_Minor Key_Major)]
-            
+
             [strategy (Strategy_Main root-note master-key 128 32)]]
 
         (print "Melody sparseness:" melody-sparseness)
-        
-        (print "Vox set:" vox-sample-folder)
-        
+
+        (if vox-sets
+          (print "Vox set:" vox-sample-folder))
+
         (strategy.gen_add (Generator_Callback 1 (make-section-lookup-fn melody-fns-main melody-pattern)))
         (strategy.gen_add (Generator_Callback 1 (make-section-lookup-fn melody-fns-bass melody-pattern)))
         (strategy.gen_add (Generator_Callback 1 (make-section-lookup-fn weirdos-fns weirdos-pattern)))
-        
+
         (strategy.gen_add (Generator_Callback 2 (make-section-lookup-fn breaks-fns breaks-pattern)))
-        
+
         (let [[beat-seed (random.random)]
               [drum-kit (random.choice ["chip" "808k" "canb"])]]
           (print "Drum kit:" drum-kit)
@@ -336,23 +337,24 @@
               [(= drum-kit "canb") (itf.smp_add (Sample_File :name (+ "CanOfBeats-" samplename "drum") :filename (print-through "CanOfBeats sample " (get-random-sample "CanOfBeats" (get {"bass" "bd" "snare" "sd"} samplename)))))]))
           (strategy.gen_add (Generator_Callback 1 (make-probability-table-fn (drum-sample-chooser "bass" drum-kit) :probability-table (-> beats (get :hiphop) (get :bd)) :seed beat-seed :trippy (< (random.random) 0.05))))
           (strategy.gen_add (Generator_Callback 1 (make-probability-table-fn (drum-sample-chooser "snare" drum-kit) :probability-table (-> beats (get :hiphop) (get :sd)) :seed beat-seed :trippy (< (random.random) 0.1)))))
-        
-        (let [[samples-808-hihat (list-comp (itf.smp_add (Sample_File :name (+ "808-hihat-" (unicode b)) :filename (get-random-sample "808" "hi hat-snappy"))) [b (xrange 3)])]]
+
+        (let [[samples-808-hihat (list-comp (itf.smp_add (Sample_File :name (+ "808-hihat-" (unicode b)) :filename (get-random-sample "808" "hi-hat-snappy"))) [b (xrange 3)])]]
           (strategy.gen_add (Generator_Callback 1 (make-hats-fn samples-808-hihat))))
-        
-        (strategy.gen_add (Generator_Callback 1 (make-section-lookup-fn vox-fns vox-pattern)))
-        
+
+        (if vox-sets
+          (strategy.gen_add (Generator_Callback 1 (make-section-lookup-fn vox-fns vox-pattern))))
+
         ; add number of channels used to the itfile 'message' area
         (add-itf-message-line itf (+ "channels " (str (+ (max (list-comp (get g 0) [g strategy.gens])) 1))))
         (add-itf-message-line itf (+ "songdata-seed-int " (str (% (int seed-hash 16) (pow 2 23)))))
         (for [n (range (len notes-sets))]
           (add-itf-message-line itf (+ "songdata-notes-set-" (str n) " " (.join " " (list-comp (str x) [x (get notes-sets n)])))))
         (add-itf-message-line itf (+ "songdata-melody-pattern " (.join " " (list-comp (str m) [m melody-pattern]))))
-        
+
         (for [i (xrange 28)]
           (print "pattern" i)
           (itf.ord_add (itf.pat_add (strategy.get_pattern))))
-        
+
         (print "Applying post-fx")
         (let [[seeds (list-comp (random.random) [x (range 4)])]
               [pattern [0 0 0 1 2 2 2 3]]

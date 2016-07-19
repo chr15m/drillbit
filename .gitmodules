@@ -1,0 +1,9 @@
+[submodule "autotracker"]
+	path = autotracker
+	url = git@github.com:chr15m/autotracker.git
+[submodule "chipvolver"]
+	path = chipvolver
+	url = git@github.com:chr15m/chipvolver.git
+[submodule "jsfxr"]
+	path = jsfxr
+	url = git@github.com:chr15m/jsfxr.git
