@@ -206,20 +206,21 @@
     [s (range sample-count)]))
 
 (defn make-bleep-sample [range &optional [r (random.Random)]]
-  (let [[pattern
+  (let [[arp-mod (r.choice [0 0 0 0 -0.3162 0.7454 0.7454])]
+        [pattern
          {"oldParams" true
           "wave_type" (r.choice [0 1])
           "p_env_attack" (if (r.choice [0 0 0 0 1]) (* 0.5 (r.random)) 0)
           "p_env_sustain" (r.random)
           "p_env_punch" (r.random)
           "p_env_decay" (+ (* (r.random) 0.9) 0.1)
-          "p_base_freq" (if (= range "hi") 0.2477 0.1737)
+          "p_base_freq" (if (or (= range "hi") (< arp-mod 0)) 0.1737 0.12079)
           "p_freq_limit" 0
           "p_freq_ramp" 0
           "p_freq_dramp" 0
           "p_vib_strength" 0
           "p_vib_speed" 0
-          "p_arp_mod" (r.choice [0 0 0 0 -0.3162 0.7454 0.7454])
+          "p_arp_mod" arp-mod
           "p_arp_speed" (+ (* 0.5 (r.random)) 0.4)
           "p_duty" (r.random)
           "p_duty_ramp" (if (r.choice [0 0 1]) (r.random) 0)
