@@ -342,7 +342,7 @@
         (let [[samples-808-hihat (list-comp (itf.smp_add (Sample_File :name (+ "808-hihat-" (unicode b)) :filename (get-random-sample "808" "hi-hat-snappy"))) [b (xrange 3)])]]
           (strategy.gen_add (Generator_Callback 1 (make-hats-fn samples-808-hihat))))
 
-        (if vox-sets
+        (if (and vox-sets (not (in "--no-vox" argv)))
           (strategy.gen_add (Generator_Callback 1 (make-section-lookup-fn vox-fns vox-pattern))))
 
         ; add number of channels used to the itfile 'message' area
@@ -370,7 +370,8 @@
             ; apply to vox
             (apply-fx-to-pattern (get itf.patlist p) 8)
             ; drop-groups make things less or more busy
-            (apply-drop-groups-to-pattern (get itf.patlist p) p drop-groups never-drop :seed drop-group-base-seed)))
+            (if (not (in "--no-drop-groups" argv))
+              (apply-drop-groups-to-pattern (get itf.patlist p) p drop-groups never-drop :seed drop-group-base-seed))))
         itf))))
 
 (if (= __name__ "__main__")
