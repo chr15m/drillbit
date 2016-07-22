@@ -367,6 +367,8 @@
             (apply-fx-to-pattern (get itf.patlist p) 3)
             ; also do 808 snares
             (apply-fx-to-pattern (get itf.patlist p) 6)
+            ; apply to vox
+            (apply-fx-to-pattern (get itf.patlist p) 8)
             ; drop-groups make things less or more busy
             (apply-drop-groups-to-pattern (get itf.patlist p) p drop-groups never-drop :seed drop-group-base-seed)))
         itf))))
