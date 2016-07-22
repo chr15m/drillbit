@@ -142,7 +142,7 @@
 
 (defn make-vox-fn [random-sample-fn &optional [seed random.random]]
   (let [[r (random.Random (value-or-callable seed))]
-        [base-pattern (list-comp (r.choice (get-wrapped [[0 1 1 1 1] [0 1 1]] p)) [p (range 8)])]]
+        [base-pattern (list-comp (r.choice (get-wrapped [[0 1 1 1 1 1 1 1] [0 1 1 1 1]] p)) [p (range 8)])]]
     (generator-wrapper
       (fn [pattern-index channel-number block]
         (loop [[row 0] [pace 4] [result []]]
@@ -152,7 +152,7 @@
               (recur
                 (inc row)
                 (if (and hit (< (r.random) 0.33333))
-                  (r.choice [1 1  2 2 2  3  4 4 4 4])
+                  (r.choice [2 2 2  3  4 4 4 4])
                   pace)
                 (+ result [(if (and hit (get-wrapped base-pattern (/ row pace)))
                            [60 (random-sample-fn) 64 0 0]
