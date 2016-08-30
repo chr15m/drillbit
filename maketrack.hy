@@ -1,8 +1,10 @@
 #!/usr/bin/env hy
 
 ; TODO: 
+; * more hat algorithms
 ; * arp
-; * fills (fill sequence + random selection)
+; * fills (fill pattern-sequence + random selection of channels to fill)
+; * use alternate drum types for break-backing
 
 (import os)
 (import sys)
