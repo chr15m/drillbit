@@ -2,9 +2,12 @@
 (import math)
 (import random)
 (import pprint)
+(import [functools [partial]])
 
 (import [autotracker [samples]])
+(import [autotracker.it.itfile [ITFile]])
 (import [autotracker.it.sample [Sample_File]])
+(import [autotracker.it.pattern [Pattern]])
 
 (def here (os.path.dirname __file__))
 
@@ -56,6 +59,25 @@
 
 (defn set-pattern-value! [pattern channel-number row value]
   (setv (get (get pattern.data row) channel-number) value))
+
+(defn add-pattern [i length pattern-number channel-number pattern-data]
+  (let [[existing-pattern (> (len i.patlist) pattern-number)]
+        [p (if existing-pattern (get i.patlist pattern-number) (Pattern length))]]
+    (list-comp (set-pattern-value! p channel-number r (get pattern-data r)) [r (range length)])
+    (if (not existing-pattern)
+      (i.ord_add (i.pat_add p)))))
+
+(defn add-sample [i name sample &rest args &kwargs kwargs]
+  (if (= (type sample) unicode)
+    (i.smp_add (Sample_File :name name :filename sample))))
+
+(defn track-builder [track-name bpm pattern-length message]
+  (let [[i (ITFile track-name)]
+        [s (partial add-sample i)]
+        [p (partial add-pattern i pattern-length)]]
+    (setv i.name track-name)
+    (setv i.tempo bpm)
+    [i s p]))
 
 (defn weighted-choice [r vals]
   (r.choice (sum (list-comp (* [c] (get vals c)) [c vals]) [])))
