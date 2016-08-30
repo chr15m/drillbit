@@ -6,7 +6,7 @@
 
 (import [autotracker [samples]])
 (import [autotracker.it.itfile [ITFile]])
-(import [autotracker.it.sample [Sample_File]])
+(import [autotracker.it.sample [Sample_File Sample_FileSlice Sample_Raw]])
 (import [autotracker.it.pattern [Pattern]])
 
 (def here (os.path.dirname __file__))
@@ -68,8 +68,19 @@
       (i.ord_add (i.pat_add p)))))
 
 (defn add-sample [i name sample &rest args &kwargs kwargs]
-  (if (= (type sample) unicode)
-    (i.smp_add (Sample_File :name name :filename sample))))
+  (cond
+    [(= (type sample) unicode) (if (in "slices" kwargs)
+                                 (list-comp (i.smp_add (Sample_FileSlice name
+                                                                         :filename sample
+                                                                         :slices (get kwargs "slices")
+                                                                         :which s
+                                                                         :loop (.get kwargs "loop" nil)))
+                                   [s (range (get kwargs "slices"))])
+                                 (i.smp_add (Sample_File name :filename sample)))]
+    [(= (type sample) list) (i.smp_add (Sample_Raw name
+                                                   :samples sample
+                                                   :flags (.get kwargs "flags" 0)
+                                                   :loop (.get kwargs "loop" {})))]))
 
 (defn track-builder [track-name bpm pattern-length message]
   (let [[i (ITFile track-name)]
