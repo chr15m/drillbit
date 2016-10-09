@@ -31,7 +31,7 @@
   (let [[hash (initial-hash (extract-hash argv))]
         [rnd (Random hash)]
         [row-count 128]
-        [[it sample pattern] (track-builder "808 cow" 180 row-count "Algorave cowbells")]
+        [[it sample pattern] (track-builder "808 cow" 180 row-count)]
         [fname (+ "cowbell-" hash ".it")]
         [sample-set (make-sample-set rnd sample)]
         [generated-settings (make-pattern-settings rnd)]]
