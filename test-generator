@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ "$1" = "" ]
+then
+  echo "Usage: $0 GENERATOR"
+  echo
+  ls generators | grep -E "make(.*)\.hy" | cut -d"_" -f2- | cut -d"." -f1
+else
+  result=`hy generators/make_$1.hy $2`
+  if [ "$?" = "0" ]
+  then
+    file=`echo "$result" | head -n1 | cut -f2 -d" "`
+    xmp "$file"
+    rm "$file"
+  fi
+fi

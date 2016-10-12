@@ -1,3 +1,6 @@
 .*.swp
 samples/*.wav
-*.it
+*.wav
+autotracker
+chipvolver
+jsfxr
