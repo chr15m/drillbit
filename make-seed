@@ -1,0 +1,3 @@
+#!/bin/sh
+
+head /dev/urandom | sha1sum | cut -f1 -d" "
