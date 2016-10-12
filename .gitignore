@@ -1,5 +1,6 @@
 .*.swp
 samples/*
+tracks/*
 *.wav
 autotracker
 chipvolver
