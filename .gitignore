@@ -2,6 +2,7 @@
 samples/*
 tracks/*
 *.wav
+*.it
 autotracker
 chipvolver
 jsfxr
