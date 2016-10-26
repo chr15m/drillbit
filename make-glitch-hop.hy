@@ -27,7 +27,7 @@
         [bleep-crunch-sample-set (list-comp (make_bleep_crunch.make-sample-set rnd sample) [x (range 2)])]
         [bleep-crunch-generated-settings (list-comp (make_bleep_crunch.make-pattern-settings rnd rootnote (get notes-set (int (/ x 2))) bleep-crunch-sample-set) [x (range 4)])]
         [808-sample-sets (list-comp (make_808er.make-sample-set rnd sample) [x (range 2)])]
-        [808-generated-settings (list-comp (make_808er.make-pattern-settings rnd) [x (range 2)])]
+        [808-generated-settings (list-comp (make_808er.make-pattern-settings rnd rootnote (get notes-set (int (/ x 2))) 808-sample-sets) [x (range 2)])]
         [patterns (list-comp
                     {:pace (rnd.choice (if (= x 2)
                                          [2 2 4 8]
@@ -40,18 +40,18 @@
     (print fname)
     (pr "notes set" notes-set)
     ;(pprint patterns stderr)
-    (for [p (range 24)]
+    (for [p (range 16)]
       (let [[section (% (int (/ p 8)) 2)]]
         (pr "pattern" p)
         (pr "section" section)
         (when (play-pattern 0 p patterns)
           (let [[settings (* section 2)]]
             (pr "bleep 1 settings" settings)
-            (make_bleep_crunch.make-pattern rnd pattern (get bleep-crunch-generated-settings settings) (get bleep-crunch-sample-set 0) p 0 row-count rootnote)))
+            (make_bleep_crunch.make-pattern rnd pattern (get bleep-crunch-generated-settings settings) (get bleep-crunch-sample-set 0) p 0 row-count)))
         (when (play-pattern 1 p patterns)
           (let [[settings (+ (* section 2) 1)]]
             (pr "bleep 2 settings" settings)
-            (make_bleep_crunch.make-pattern rnd pattern (get bleep-crunch-generated-settings settings) (get bleep-crunch-sample-set 1) p 1 row-count rootnote)))
+            (make_bleep_crunch.make-pattern rnd pattern (get bleep-crunch-generated-settings settings) (get bleep-crunch-sample-set 1) p 1 row-count)))
         (when (or
                 (play-pattern 2 p patterns)
                 (not (or

@@ -12,7 +12,7 @@
 (defn make-sample-set [rnd sample]
   [(sample "cow" "samples/808-cowbell.wav")])
 
-(defn make-pattern-settings [rnd]
+(defn make-pattern-settings [rnd rootnote notes sample-set]
   (let [[loop-length (rnd.choice [8 16 32 64])]]
     (genetic-rhythm-loop rnd loop-length)))
 

@@ -23,7 +23,7 @@
                          (sample "808-hat" (rnd.choice (dir-sample-list "samples/808" "hi hat")))]]]
     [samples-808-bass samples-808-snare samples-808-hh]))
 
-(defn make-pattern-settings [rnd]
+(defn make-pattern-settings [rnd rootnote notes sample-set]
   (let [[beat-length (rnd.choice [8 16 32])]]
     {:bd (make-loop rnd 'bd beat-length)
      :sd (make-loop rnd 'sd beat-length)
