@@ -9,16 +9,16 @@
   [math [sin]]
   [sys [argv stderr]])
 
-(defn make-sample-set [rnd sample]
-  (list-comp (sample "sfxr-bleep" (sfxr-render (make-bleep :r rnd) "bleep.wav")) [s (range 3)]))
+(defn make-sample-set [rnd it sampler]
+  (list-comp (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) "bleep.wav")) [s (range 3)]))
 
-(defn make-pattern-settings [rnd rootnote notes sample-set]
+(defn make-pattern-settings [rnd it sample-set &optional [notes [0 5 7]] [rootnote 60] &kwargs _]
   (let [[note-loop (list-comp (+ (rnd.choice notes) rootnote) [l (range (rnd.choice [8 16 32 64]))])]
         [samples-loop (list-comp (rnd.choice sample-set) [l (range (rnd.choice [8 16 32 64]))])]
         [rhythm-loop (genetic-rhythm-loop rnd (rnd.choice [16 32 64]))]]
     [note-loop samples-loop rhythm-loop]))
 
-(defn make-pattern [rnd pattern settings sample-set pattern-number channel row-count]
+(defn make-pattern [rnd it pattern settings sample-set pattern-number channel row-count]
   (let [[[note-loop samples-loop rhythm-loop] settings]
         [pace 4]
         [rows (xrange row-count)]]

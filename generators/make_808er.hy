@@ -16,21 +16,21 @@
       (< (rnd.random) (get-wrapped (get hiphop-beat (keyword drum)) r))
       [r (range beat-length)])))
 
-(defn make-sample-set [rnd sample]
-  (let [[samples-808-bass (sample "808-bass" (rnd.choice (dir-sample-list "samples/808" "bass")))]
-        [samples-808-snare (list-comp (sample "808-snare" (rnd.choice (dir-sample-list "samples/808" "snare"))) [x (range 2)])]
-        [samples-808-hh [(sample "808-hat" (rnd.choice (dir-sample-list "samples/808" "hi hat-snappy")))
-                         (sample "808-hat" (rnd.choice (dir-sample-list "samples/808" "hi hat")))]]]
+(defn make-sample-set [rnd it sampler]
+  (let [[samples-808-bass (sampler "808-bass" (rnd.choice (dir-sample-list "samples/808" "bass")))]
+        [samples-808-snare (list-comp (sampler "808-snare" (rnd.choice (dir-sample-list "samples/808" "snare"))) [x (range 2)])]
+        [samples-808-hh [(sampler "808-hat" (rnd.choice (dir-sample-list "samples/808" "hi hat-snappy")))
+                         (sampler "808-hat" (rnd.choice (dir-sample-list "samples/808" "hi hat")))]]]
     [samples-808-bass samples-808-snare samples-808-hh]))
 
-(defn make-pattern-settings [rnd rootnote notes sample-set]
+(defn make-pattern-settings [rnd it sample-set &optional [rootnote 60] [notes [0 5 7]] &kwargs _]
   (let [[beat-length (rnd.choice [8 16 32])]]
     {:bd (make-loop rnd 'bd beat-length)
      :sd (make-loop rnd 'sd beat-length)
      :hh (make-loop rnd 'hh beat-length)
      :ho (list-comp (< (rnd.random) 0.05) [r (range beat-length)])}))
 
-(defn make-pattern [rnd pattern settings sample-set pattern-number channel row-count]
+(defn make-pattern [rnd it pattern settings sample-set pattern-number channel row-count]
   (let [[loops settings]
         [[samples-808-bass samples-808-snare samples-808-hh] sample-set]
         [pace 4]

@@ -9,14 +9,14 @@
   [math [sin]]
   [sys [argv stderr]])
 
-(defn make-sample-set [rnd sample]
-  [(sample "cow" "samples/808-cowbell.wav")])
+(defn make-sample-set [rnd it sampler]
+  [(sampler "cow" "samples/808-cowbell.wav")])
 
-(defn make-pattern-settings [rnd rootnote notes sample-set]
+(defn make-pattern-settings [rnd it sample-set &optional [rootnote 60] [notes [0 5 7]] &kwargs _]
   (let [[loop-length (rnd.choice [8 16 32 64])]]
     (genetic-rhythm-loop rnd loop-length)))
 
-(defn make-pattern [rnd pattern settings sample-set pattern-number channel row-count]
+(defn make-pattern [rnd it pattern settings sample-set pattern-number channel row-count]
   (let [[combined-loop settings]
         [pace 4]
         [sample-cowbell (get sample-set 0)]]

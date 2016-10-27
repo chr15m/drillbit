@@ -30,13 +30,13 @@
           [progression (make-notes-progression rnd-notes)]
           [[note-sets rootnote pattern] (list-comp (get progression n) [n [:note-sets :rootnote :pattern]])]
           [sections (len pattern)]
-          [sample-set (generator.make-sample-set rnd-beats sampler)]
+          [sample-set (generator.make-sample-set rnd-beats it sampler)]
           ;[_ (print sections note-sets pattern)]
           [settings (list-comp
-                      (generator.make-pattern-settings rnd-beats rootnote (get note-sets s) sample-set)
+                      (generator.make-pattern-settings rnd-beats it :sample-set sample-set :rootnote rootnote :notes (get note-sets s))
                       [s (range (len note-sets))])]]
       (for [p (range sections)]
-        (generator.make-pattern rnd-beats pattern-gen (get settings (get pattern p)) sample-set p 0 row-count))
+        (generator.make-pattern rnd-beats it pattern-gen (get settings (get pattern p)) sample-set p 0 row-count))
       (print fname)
       (it.save fname))))
 
