@@ -15,17 +15,18 @@
 
 (defn main [argv]
   (if (or
-        (< (len argv) 2)
+        (< (len argv) 3)
         (not (in (get argv 1) lookup)))
     (usage argv)
     (let [[generator-name (get argv 1)]
           [generator (get lookup generator-name)]
+          [bpm (int (get argv 2))]
           [hash-notes (initial-hash (extract-hash argv 0))]
           [hash-beats (initial-hash (extract-hash argv 1))]
           [rnd-notes (Random hash-notes)]
           [rnd-beats (Random hash-beats)]
           [row-count 128]
-          [[it sampler pattern-gen] (track-builder "Algorave stem" 180 row-count)]
+          [[it sampler pattern-gen] (track-builder "Algorave stem" bpm row-count)]
           [fname (+ "stem-" generator-name "-" hash-notes "-" hash-beats ".it")]
           [progression (make-notes-progression rnd-notes)]
           [[note-sets rootnote pattern] (list-comp (get progression n) [n [:note-sets :rootnote :pattern]])]
@@ -41,7 +42,7 @@
       (it.save fname))))
 
 (defn usage [argv]
-  (print "Usage:" (get argv 0) "GENERATOR [NOTE-PROGRESSION-HASH] [GENERATOR-HASH]")
+  (print "Usage:" (get argv 0) "GENERATOR BPM [NOTE-PROGRESSION-HASH] [GENERATOR-HASH]")
   (print "Generators:")
   (for [k lookup]
     (print "\t" k))
