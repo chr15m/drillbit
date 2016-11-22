@@ -27,7 +27,7 @@
           [rnd-beats (Random hash-beats)]
           [row-count 128]
           [[it sampler pattern-gen] (track-builder "Algorave stem" bpm row-count)]
-          [fname (+ "stem-" generator-name "-" hash-notes "-" hash-beats ".it")]
+          [fname (+ "stem-" generator-name "-" (str bpm) "-" hash-notes "-" hash-beats ".it")]
           [progression (make-notes-progression rnd-notes)]
           [[note-sets rootnote pattern] (list-comp (get progression n) [n [:note-sets :rootnote :pattern]])]
           [sections (len pattern)]

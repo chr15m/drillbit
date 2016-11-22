@@ -1,4 +1,5 @@
 (import os)
+(import [sys [stderr]])
 (import json)
 (import math)
 (import random)
@@ -14,13 +15,13 @@
 
 (defn sfxr-genetics [startswith name]
   (let [[seed (.hexdigest (sha1 (str (random.random))))]]
-    (print "sfxr genetics:" seed startswith name)
+    (stderr.write (+ (.join " " ["sfxr genetics:" seed startswith name]) "\n"))
     (let [[wav-file-name (+ "samples/" name "-" (str seed) "-evolved.wav")]
           [already-generated (os.path.isfile wav-file-name)]]
       (if (not already-generated)
         (let [[[sample-evolved-definition seed-used] (reproduce (load_definitions (glob (+ startswith "*.sfxr.json"))) :seed seed)]]
           (sfxr-render sample-evolved-definition wav-file-name))
-        (print "already-generated"))
+        (sterr.write "already-generated"))
       wav-file-name)))
 
 (def keys ["oldParams"

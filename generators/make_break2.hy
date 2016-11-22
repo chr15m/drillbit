@@ -13,7 +13,7 @@
 
 (def breakbeat-pattern [1 0 2 0  0 0 2 0])
 
-(defn make-sample-set [rnd it sampler &optional [breaks ["amen.wav" "think.wav"]]]
+(defn make-sample-set [rnd it sampler &optional [breaks ["bboy.wav"  "click.wav"  "coldsweat.wav"  "foolsgold.wav"  "funkydrummer.wav"  "worm.wav"]]]
   (let [[break-chunk-count 8]
         [break-name (rnd.choice breaks)]
         [samples-break (sampler "break" (+ "samples/breaks/" break-name) :slices break-chunk-count)]
@@ -26,7 +26,7 @@
         [length-break-chunk (sample-length it (-> sample-set (get 0) (get 0)))]
         [length-beat (int (* 44100 (/ 60.0 it.tempo)))]
         [break-note (int (ftom (* (mtof 60) (/ length-break-chunk length-beat) (/ break-chunk-count 4))))]
-        [break-rhythm (break-pattern-mutate rnd (/ 2 16)
+        [break-rhythm (break-pattern-mutate rnd (/ 2 64)
                                             (rnd.choice [[0 1 2 3  4 5 6 7  8 9 10 11  12 13 14 15]
                                                          [0 1 2 0  1 2 3 4  8 9 10  8   9 10 13 15]]))]]
     {:note break-note
@@ -52,7 +52,9 @@
                    [60 (get samples-bass-snare (- drum-type 1)) 64 0 0]
                    empty))
                [r rows]))
-    (apply-fx-to-pattern (get it.patlist pattern-number) 0 :seed (fn [] (str (rnd.random))))))
+    ;(apply-fx-to-pattern (get it.patlist pattern-number) 0 :seed (fn [] (str (rnd.random))))
+    
+    ))
 
 (defn break-pattern-mutate [rnd probability pattern]
   (list-comp (if (< (rnd.random) probability) (rnd.choice pattern) x) [x pattern]))
