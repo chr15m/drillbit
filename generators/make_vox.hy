@@ -18,41 +18,16 @@
     (list-comp (sampler (% "vox-%d" s) (get vox-sample-set s)) [s (range (len vox-sample-set))])))
 
 (defn make-pattern-settings [rnd it sample-set &kwargs _]
-  (let [[base-pattern (list-comp (rnd.choice (get-wrapped [[0 1 1 1 1 1 1 1 1 1] [0 1 1 1 1]] p)) [p (range 8)])]
-        [sample-subset (rnd.sample sample-set 15)]]
+  (let [[pattern-length (rnd.choice [16 32 64])]
+        [probability-table (rnd.choice [[2 2 4 4 6 8 8] [4 8] [2 2 2 3 4 4 4] [4 4 6 8 8 16]])]
+        [base-pattern (list-comp (not (% x (rnd.choice probability-table))) [x (range pattern-length)])]
+        [sample-subset (rnd.sample sample-set 20)]]
+    ;(stderr.write (+ "probability table: " (str probability-table) "\n"))
+    ;(stderr.write (+ "pattern-length: " (str pattern-length) "\n"))
     [base-pattern sample-subset]))
 
 (defn make-pattern [rnd it pattern settings sample-set pattern-number channel row-count]
   (let [[[base-pattern sample-subset] settings]]
     (pattern pattern-number channel
-             (loop [[row 0] [pace 4] [result []]]
-               (if (< row row-count)
-                 ; if we landed on a row we're currently processing
-                 (let [[hit (not (% row pace))]]
-                   (recur
-                     (inc row)
-                     (if (and hit (< (rnd.random) 0.33333))
-                       (rnd.choice [2 2 2  3  4 4 4 4])
-                       pace)
-                     (+ result [(if (and hit (get-wrapped base-pattern (/ row pace)))
-                                  [60 (rnd.choice sample-subset) 64 0 0]
-                                  empty)])))
-                 result)))))
+             (list-comp (get [empty [60 (rnd.choice sample-subset) 64 0 0]] (get-wrapped base-pattern x)) [x (range row-count)]))))
 
-(defn main [argv]
-  (let [[hash (initial-hash (extract-hash argv))]
-        [rnd (Random hash)]
-        [row-count 128]
-        [[it sample pattern] (track-builder "Vox" 180 128)]
-        [fname (+ "vox-" hash ".it")]
-        [notes (get-good-notes rnd 5)]
-        [rootnote (rnd.randint 48 72)]
-        [sample-set (make-sample-set rnd sample)]
-        [generated-settings (make-pattern-settings rnd rootnote notes sample-set)]]
-    (print fname)
-    (for [p (range 4)]
-      (make-pattern rnd pattern generated-settings sample-set p 0 row-count rootnote))
-    (it.save fname)))
-
-(if (= __name__ "__main__")
-  (main argv))
