@@ -19,7 +19,7 @@
 
 (defn make-pattern-settings [rnd it sample-set &kwargs _]
   (let [[pattern-length (rnd.choice [16 32 64])]
-        [probability-table (rnd.choice [[2 2 4 4 6 8 8] [4 8] [2 2 2 3 4 4 4] [4 4 6 8 8 16]])]
+        [probability-table (rnd.choice [[2 2 4 4 6 8 8] [4 8] [2 2 2 3 4 4 4] [4 4 6 8 8 16] [2 4 4 4 8 8]])]
         [base-pattern (list-comp (not (% x (rnd.choice probability-table))) [x (range pattern-length)])]
         [sample-subset (rnd.sample sample-set 20)]]
     ;(stderr.write (+ "probability table: " (str probability-table) "\n"))
