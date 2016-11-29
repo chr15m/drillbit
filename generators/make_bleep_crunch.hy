@@ -28,21 +28,3 @@
                  [(get-wrapped note-loop r) (get-wrapped sample-set r) 32 0 0]
                  empty)
                [r rows]))))
-
-(defn main [argv]
-  (let [[hash (initial-hash (extract-hash argv))]
-        [rnd (Random hash)]
-        [row-count 128]
-        [[it sample pattern] (track-builder "Beep crunch" 180 128)]
-        [fname (+ "beep-crunch-" hash ".it")]
-        [notes (get-good-notes rnd 5)]
-        [rootnote (rnd.randint 48 72)]
-        [sample-set (make-sample-set rnd sample)]
-        [generated-settings (make-pattern-settings rnd rootnote notes sample-set)]]
-    (print fname)
-    (for [p (range 4)]
-      (make-pattern rnd pattern generated-settings sample-set p 0 row-count rootnote))
-    (it.save fname)))
-
-(if (= __name__ "__main__")
-  (main argv))

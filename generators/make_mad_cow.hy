@@ -27,18 +27,3 @@
                  empty)
                [r (xrange row-count)]))))
 
-(defn main [argv]
-  (let [[hash (initial-hash (extract-hash argv))]
-        [rnd (Random hash)]
-        [row-count 128]
-        [[it sample pattern] (track-builder "808 cow" 180 row-count)]
-        [fname (+ "cowbell-" hash ".it")]
-        [sample-set (make-sample-set rnd sample)]
-        [generated-settings (make-pattern-settings rnd)]]
-    (print fname)
-    (for [p (range 4)]
-      (make-pattern rnd pattern generated-settings sample-set p 0 row-count))
-    (it.save fname)))
-
-(if (= __name__ "__main__")
-  (main argv))

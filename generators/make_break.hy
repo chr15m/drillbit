@@ -57,18 +57,3 @@
 (defn break-pattern-mutate [rnd probability pattern]
   (list-comp (if (< (rnd.random) probability) (rnd.choice pattern) x) [x pattern]))
 
-(defn main [argv]
-  (let [[hash (initial-hash (extract-hash argv))]
-        [rnd (Random hash)]
-        [row-count 128]
-        [[it sampler pattern] (track-builder "breakbeat" 180 128)]
-        [fname (+ "breakbeat-" hash ".it")]
-        [sample-set (make-sample-set rnd sampler)]
-        [generated-settings (make-pattern-settings rnd it sample-set)]]
-    (print fname)
-    (for [p (range 4)]
-      (make-pattern rnd pattern generated-settings sample-set p 0 row-count))
-    (it.save fname)))
-
-(if (= __name__ "__main__")
-  (main argv))
