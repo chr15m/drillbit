@@ -14,8 +14,9 @@
 (def breakbeat-pattern [1 0 2 0  0 0 2 0])
 
 (defn make-sample-set [rnd it sampler &optional [breaks ["amen.wav" "think.wav"]]]
-  (let [[break-chunk-count 8]
-        [break-name (rnd.choice breaks)]
+  (let [[breakbeat (rnd.choice [0 1])]
+        [break-chunk-count (get [16 8] breakbeat)]
+        [break-name (get breaks breakbeat)]
         [samples-break (sampler "break" (+ "samples/breaks/" break-name) :slices break-chunk-count)]
         [samples-bass (sampler "break-bass" (rnd.choice (dir-sample-list "samples/trap-kicks" "kick")))]
         [samples-snare (sampler "break-snare" (rnd.choice (dir-sample-list "samples/crispy" "crispy")))]]
