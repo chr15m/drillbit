@@ -8,6 +8,8 @@
   [random [Random]]
   [sys [argv stderr]])
 
+(def channels 1)
+
 (defn make-sample-set [rnd it sampler]
   (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) "bleep.wav")) )
 
@@ -37,8 +39,8 @@
         [note-loop (list-comp (get scale (% s (len scale))) [s (range 8)])]
         [melody (make-fractal-melody rnd note-loop (rnd.choice [8 16 32]) :probability-switch 0.33)]
         [octaves (make-octave-sequence rnd (rnd.choice [8 16 32]) (rnd.random))]]
-    (prerr "scale:" (sorted (list (set (list-comp s [s scale] (!= s -1))))))
-    (prerr "melody:" melody)
+    ;(prerr "scale:" (sorted (list (set (list-comp s [s scale] (!= s -1))))))
+    ;(prerr "melody:" melody)
     (list-comp
       (let [[pos (int (/ n stretch))]
             [note (get-wrapped melody pos)]

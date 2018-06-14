@@ -9,6 +9,8 @@
   [math [sin]]
   [sys [argv stderr]])
 
+(def channels 1)
+
 (defn make-sample-set [rnd it sampler]
   (list-comp (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) "bleep.wav")) [s (range 3)]))
 

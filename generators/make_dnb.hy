@@ -10,6 +10,8 @@
 
 (require hy.contrib.loop)
 
+(def channels 2)
+
 (defn make-loop [rnd drum beat-length]
   (let [[beat (get beats (rnd.choice [:dnb-1 :dnb-2]))]]
     (list-comp

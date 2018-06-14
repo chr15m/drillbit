@@ -9,6 +9,8 @@
   [math [sin]]
   [sys [argv stderr]])
 
+(def channels 1)
+
 (defn make-sample-set [rnd it sampler]
   [(sampler "cow" "samples/808-cowbell.wav")])
 

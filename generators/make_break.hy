@@ -11,6 +11,8 @@
 
 (require hy.contrib.loop)
 
+(def channels 2)
+
 (def breakbeat-pattern [1 0 2 0  0 0 2 0])
 
 (defn make-sample-set [rnd it sampler &optional [breaks ["amen.wav" "think.wav"]]]

@@ -10,6 +10,8 @@
   [os]
   [sys [argv stderr]])
 
+(def channels 1)
+
 (defn make-sample-set [rnd it sampler]
   (let [[vox-sets (and (os.path.isdir "acapellas") (list-comp d [d (os.listdir "acapellas")] (os.path.isdir (os.path.join "acapellas" d))))]
         [vox-sample-folder (and vox-sets (os.path.join "acapellas" (rnd.choice vox-sets)))]
