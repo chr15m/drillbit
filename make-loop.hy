@@ -31,7 +31,9 @@
           [progression (make-notes-progression (make-rng hash-song "notes"))]
           
           ;[[note-sets rootnote pattern] (list-comp (get progression n) [n [:note-sets :rootnote :pattern]])]
-          [notes (list-comp (int n) [n (.split (.get environ "NOTES" "0 4 7 11") " ")])]
+          [notes (if (.has_key environ "NOTES")
+                   (list-comp (int n) [n (.split (.get environ "NOTES") " ")])
+                   (.sample (make-rng hash-song "notes") [0 2 4 5 7 9 11] 4))]
           [rootnote 60]
           [pattern [1 1 1 1]]
           
