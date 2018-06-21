@@ -11,9 +11,22 @@
 (import
   [autotracker.utils [track-builder add-message initial-hash extract-hash make-rng]]
   [autotracker.compose [make-notes-progression]]
-  [generators [lookup]])
+  [generators [lookup get-generator-name]])
 
 (require hy.contrib.loop)
+
+(def auto-pan
+  {"bleep_crunch" 63
+   "noiser" 63
+   "dnb" 0
+   "808er" 0
+   "mad_cow" 0
+   "hats" 0
+   "break2" 0
+   "break" 0
+   "hiphop" 0
+   "melody" 63
+   "vox" 63})
 
 (defn main [argv]
   (if (or
@@ -58,7 +71,7 @@
             (.make-pattern generator rnd-beats it pattern-gen (get settings g) (get sample-sets g) p channel row-count)
             ; alternate left and right channels
             (for [chnpan (range generator.channels)]
-              (setv (get it.chnpan (+ channel chnpan)) (get [0 63] (% g 2))))
+              (setv (get it.chnpan (+ channel chnpan)) (get auto-pan (get-generator-name generator))))
             (when (< g (dec (len generators)))
               (recur (+ generator.channels channel) (inc g))))))
       
