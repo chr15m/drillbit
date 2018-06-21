@@ -15,3 +15,9 @@
              (f.endswith ".hy")
              (not (= f "__init__.hy"))))])))
 
+(defn get-generator-name [g]
+  (-> g.--file--
+      (os.path.basename)
+      (.replace ".hy" "")
+      (.replace "make_" "")))
+
