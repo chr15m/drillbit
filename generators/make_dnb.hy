@@ -6,7 +6,7 @@
   [autotracker.tables [beats]]
   [random [Random]]
   [math [sin]]
-  [sys [argv]])
+  [sys [argv stderr]])
 
 (require hy.contrib.loop)
 
@@ -24,7 +24,9 @@
     [sample-bass samples-snare]))
 
 (defn make-pattern-settings [rnd it sample-set &optional [rootnote 60] [notes [0 5 7]] &kwargs _]
-  (let [[beat-length (rnd.choice [16 32])]]
+  (print "--- dnb ---" :file stderr)
+  (let [[beat-length (rnd.choice [16])]]
+    (print "beat-length" beat-length :file stderr)
     {:bd (make-loop rnd 'bd beat-length)
      :sd (make-loop rnd 'sd beat-length)}))
 
@@ -33,18 +35,20 @@
         [[sample-bass samples-snare] sample-set]
         [pace 2]
         [rows (xrange row-count)]]
+    (for [l loops]
+      (print (name l) (list-comp (int t) [t (get loops l)]) :file stderr))
     (pattern pattern-number (+ channel 0)
              (list-comp
                (let [[p (int (/ r pace))]]
                  (if (and (not (% r pace)) (get-wrapped (get loops :bd) p))
-                   [60 sample-bass (get [255 32] (% p 2)) 32 0 0]
+                   [60 sample-bass (get [255 20 32 10] (% p 4)) 32 0 0]
                    empty))
                [r rows]))
     (pattern pattern-number (+ channel 1)
              (list-comp
                (let [[p (int (/ r pace))]]
                  (if (and (not (% r pace)) (get-wrapped (get loops :sd) p))
-                   [60 (get samples-snare 0) (get [255 32] (% p 2)) 0 0]
+                   [60 (get samples-snare 0) (get [255 20 32 10] (% p 4)) 0 0]
                    empty))
                [r rows]))))
 
