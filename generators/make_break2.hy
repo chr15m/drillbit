@@ -7,7 +7,7 @@
   [autotracker.fx [apply-fx-to-pattern]]
   [random [Random]]
   [math [sin]]
-  [sys [argv]])
+  [sys [argv stderr]])
 
 (require hy.contrib.loop)
 
@@ -31,6 +31,7 @@
         [break-rhythm (break-pattern-mutate rnd (/ 2 64)
                                             (rnd.choice [[0 1 2 3  4 5 6 7  8 9 10 11  12 13 14 15]
                                                          [0 1 2 0  1 2 3 4  8 9 10  8   9 10 13 15]]))]]
+    (print "--- break2 ---" :file stderr)
     {:note break-note
      :break break-rhythm}))
 

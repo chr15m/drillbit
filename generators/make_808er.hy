@@ -6,7 +6,7 @@
   [autotracker.tables [beats]]
   [random [Random]]
   [math [sin]]
-  [sys [argv]])
+  [sys [argv stderr]])
 
 (require hy.contrib.loop)
 
@@ -27,6 +27,7 @@
 
 (defn make-pattern-settings [rnd it sample-set &optional [rootnote 60] [notes [0 5 7]] &kwargs _]
   (let [[beat-length (rnd.choice [8 16 32])]]
+    (print "--- 808er ---" :file stderr)
     {:bd (make-loop rnd 'bd beat-length)
      :sd (make-loop rnd 'sd beat-length)
      :hh (make-loop rnd 'hh beat-length)
