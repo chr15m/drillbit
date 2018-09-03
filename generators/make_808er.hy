@@ -4,6 +4,7 @@
   [autotracker.utils [track-builder initial-hash extract-hash dir-sample-list get-wrapped]]
   [autotracker.it.pattern [empty]]
   [autotracker.tables [beats]]
+  [autotracker.fx [apply-fx-to-pattern]]
   [random [Random]]
   [math [sin]]
   [sys [argv stderr]])
@@ -55,5 +56,10 @@
                (if (and (not (% r pace)) (get-wrapped (get loops :hh) (int (/ r pace))))
                  [60 (get samples-808-hh (int (or (get-wrapped (get loops :ho) (int (/ r pace))) (> (rnd.random) 0.95)))) 32 0 0]
                  empty)
-               [r rows]))))
+               [r rows]))
+    (when (< (rnd.random) 0.125)
+      (print "applying drill-n-bass fx" :file stderr)
+      (apply-fx-to-pattern (get it.patlist pattern-number) (+ channel 0) :seed (fn [] (str (rnd.random))))
+      (apply-fx-to-pattern (get it.patlist pattern-number) (+ channel 1) :seed (fn [] (str (rnd.random))))
+      (apply-fx-to-pattern (get it.patlist pattern-number) (+ channel 2) :seed (fn [] (str (rnd.random)))))))
 
