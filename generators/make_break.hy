@@ -56,7 +56,7 @@
                    [60 (get samples-bass-snare (- drum-type 1)) 64 0 0]
                    empty))
                [r rows]))
-    (apply-fx-to-pattern (get it.patlist pattern-number) 0 :seed (fn [] (str (rnd.random))))))
+    (apply-fx-to-pattern (get it.patlist pattern-number) (+ channel 0) :seed (fn [] (str (rnd.random))))))
 
 (defn break-pattern-mutate [rnd probability pattern]
   (list-comp (if (< (rnd.random) probability) (rnd.choice pattern) x) [x pattern]))
