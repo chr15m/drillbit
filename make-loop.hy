@@ -42,14 +42,14 @@
           [fname (+ "loop-" hash-song ".it")]
 
           [progression (make-notes-progression (make-rng hash-song "notes"))]
-          
+
           ;[[note-sets rootnote pattern] (list-comp (get progression n) [n [:note-sets :rootnote :pattern]])]
           [notes (if (.has_key environ "NOTES")
                    (list-comp (int n) [n (.split (.get environ "NOTES") " ")])
                    (.sample (make-rng hash-song "notes") [0 2 4 5 7 9 11] 4))]
           [rootnote 60]
           [pattern [1 1 1 1]]
-          
+
           [sections (len pattern)]
           ;[_ (print sections note-sets pattern)]
           ; TODO: write all params & inputs to a file
@@ -74,10 +74,12 @@
               (setv (get it.chnpan (+ channel chnpan)) (get auto-pan (get-generator-name generator))))
             (when (< g (dec (len generators)))
               (recur (+ generator.channels channel) (inc g))))))
-      
+
       (print fname)
       (it.save fname)
-      (print (.join " " argv) :file (file (+ fname ".txt") "w")))))
+      (let [[infofile (file (+ fname ".txt") "w")]]
+        (print hash-song :file infofile)
+        (print (.join " " argv) :file infofile)))))
 
 (defn usage [argv]
   (print "Usage:" (get argv 0) "BPM GENERATOR-1 [GENERATOR-2...]")
