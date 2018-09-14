@@ -1,0 +1,5 @@
+#!/bin/sh
+
+cwd=`dirname $0`
+. $cwd/virtualenv/bin/activate
+$cwd/make-loop.hy "$@"

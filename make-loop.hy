@@ -1,12 +1,16 @@
 #!/usr/bin/env hy
 
 (import
+  [os]
   [os [environ]]
   [sys [argv stderr path exit]]
   [random [Random]]
   [pprint [pprint]])
 
-(path.append "drillbit")
+(let [[me (os.path.abspath (os.path.join os.__file__ ".." ".." ".." ".."))]]
+  (path.append me)
+  (path.append (os.path.join me "drillbit"))
+  (path.append (os.path.join me "autotracker")))
 
 (import
   [autotracker.utils [track-builder add-message initial-hash extract-hash make-rng]]
@@ -39,7 +43,7 @@
           [row-count 128]
 
           [[it sampler pattern-gen] (track-builder "Algorave loop" bpm row-count)]
-          [fname (+ "loop-" hash-song ".it")]
+          [fname (os.path.join (environ.get "DEST" "") (+ "loop-" hash-song ".it"))]
 
           [progression (make-notes-progression (make-rng hash-song "notes"))]
 
