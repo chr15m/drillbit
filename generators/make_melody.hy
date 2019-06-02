@@ -12,7 +12,7 @@
 (def channels 1)
 
 (defn make-sample-set [rnd it sampler]
-  (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) "bleep.wav")) )
+  (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) (+ (str (rnd.random)) "-bleep.wav"))) )
 
 (defn shuffled [rnd elements]
   (let [[copy (slice elements)]]

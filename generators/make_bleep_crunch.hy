@@ -12,7 +12,7 @@
 (def channels 1)
 
 (defn make-sample-set [rnd it sampler]
-  (list-comp (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) "bleep.wav")) [s (range 3)]))
+  (list-comp (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) (+ (str (rnd.random)) "-bleep-crunch.wav"))) [s (range 3)]))
 
 (defn make-pattern-settings [rnd it sample-set &optional [notes [0 5 7]] [rootnote 60] &kwargs _]
   (let [[note-loop (list-comp (+ (rnd.choice notes) rootnote) [l (range (rnd.choice [8 16 32 64]))])]
