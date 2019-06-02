@@ -10,7 +10,7 @@
 (import [chipvolver [load_definitions reproduce]])
 
 (defn sfxr-render [definition filename]
-  (.communicate (Popen ["./jsfxr/sfxr-to-wav" filename] :stdout PIPE :stdin PIPE) (json.dumps definition))
+  (.communicate (Popen ["./jsfxr/sfxr-to-wav" (os.path.join (os.environ.get "DEST" "") filename)] :stdout PIPE :stdin PIPE) (json.dumps definition))
   filename)
 
 (defn sfxr-genetics [startswith name &optional [rnd (random.Random)]]
