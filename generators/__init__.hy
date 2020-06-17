@@ -1,6 +1,7 @@
 (import
   os
-  [hy [importer]])
+  [hy [importer]]
+  [autotracker.utils [listdir-sorted]])
 
 (def lookup
   (let [[dir (os.path.dirname (os.path.abspath __file__))]]
@@ -10,7 +11,7 @@
       (importer.import_file_to_module "generators" (os.path.join dir f))
       [f (list-comp
            f
-           [f (os.listdir dir)]
+           [f (listdir-sorted dir)]
            (and
              (f.endswith ".hy")
              (not (= f "__init__.hy"))))])))

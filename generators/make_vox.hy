@@ -1,7 +1,7 @@
 #!/usr/bin/env hy
 
 (import
-  [autotracker.utils [track-builder initial-hash extract-hash dir-sample-list get-wrapped add-message]]
+  [autotracker.utils [track-builder initial-hash extract-hash dir-sample-list get-wrapped add-message listdir-sorted]]
   [autotracker.it.pattern [empty]]
   [autotracker.compose [get-good-notes genetic-rhythm-loop]]
   [sfxr [make-bleep sfxr-genetics]]
@@ -13,9 +13,9 @@
 (def channels 1)
 
 (defn make-sample-set [rnd it sampler]
-  (let [[vox-sets (and (os.path.isdir "acapellas") (list-comp d [d (os.listdir "acapellas")] (os.path.isdir (os.path.join "acapellas" d))))]
+  (let [[vox-sets (and (os.path.isdir "acapellas") (list-comp d [d (listdir-sorted "acapellas")] (os.path.isdir (os.path.join "acapellas" d))))]
         [vox-sample-folder (and vox-sets (os.path.join "acapellas" (rnd.choice vox-sets)))]
-        [vox-sample-list (and vox-sample-folder (list-comp (os.path.join vox-sample-folder f) [f (os.listdir vox-sample-folder)]))]
+        [vox-sample-list (and vox-sample-folder (list-comp (os.path.join vox-sample-folder f) [f (listdir-sorted vox-sample-folder)]))]
         [vox-sample-set (rnd.sample vox-sample-list 30)]]
     (list-comp (sampler (% "vox-%d" s) (get vox-sample-set s)) [s (range (len vox-sample-set))])))
 

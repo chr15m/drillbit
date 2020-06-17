@@ -22,6 +22,7 @@
 (import [autotracker.keys [Key_Minor Key_Major]])
 (import [autotracker.strategies [Strategy_Main]])
 (import [autotracker.generators [Generator_Bass Generator_ProbabilityTable Generator_Callback Generator_AmbientMelody Generator_Breaks]])
+(import [autotracker.utils [listdir-sorted]])
 
 (import [utils [print-through get-random-sample get-random-bleep ftom mtof get-wrapped value-or-callable dir-to-samples here add-itf-message-line generator-wrapper]])
 
@@ -264,9 +265,9 @@
     (fn [itf seed filename seed-hash]
       (setv itf.tempo (random.randint 175 185))
       (print itf.tempo "BPM")
-      (let [[vox-sets (and (os.path.isdir "acapellas") (list-comp d [d (os.listdir "acapellas")] (os.path.isdir (os.path.join "acapellas" d))))]
+      (let [[vox-sets (and (os.path.isdir "acapellas") (list-comp d [d (listdir-sorted "acapellas")] (os.path.isdir (os.path.join "acapellas" d))))]
             [vox-sample-folder (and vox-sets (os.path.join "acapellas" (random.choice vox-sets)))]
-            [vox-sample-list (and vox-sample-folder (list-comp (os.path.join vox-sample-folder f) [f (os.listdir vox-sample-folder)]))]
+            [vox-sample-list (and vox-sample-folder (list-comp (os.path.join vox-sample-folder f) [f (listdir-sorted vox-sample-folder)]))]
 
             [samples-drums (sum (list-comp [(itf.smp_add (Sample_File :name (% "bassdrum-evolved-%d" x) :filename (sfxr-genetics "./sfxr-drums/bassdrum" (% "bassdrum-%d" x))))
                                             (itf.smp_add (Sample_File :name (% "snaredrum-evolved-%d" x) :filename (sfxr-genetics "./sfxr-drums/snare" (% "snaredrum-%d" x))))] [x (range 8)]) [])]

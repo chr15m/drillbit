@@ -5,6 +5,7 @@
 (import [functools [partial]])
 
 (import [autotracker [samples]])
+(import [autotracker.utils [listdir-sorted]])
 (import [autotracker.it.itfile [ITFile]])
 (import [autotracker.it.sample [Sample_File Sample_FileSlice Sample_Raw]])
 (import [autotracker.it.pattern [Pattern]])
@@ -12,10 +13,10 @@
 (def here (os.path.dirname __file__))
 
 (defn get-random-bleep [t]
-  (os.path.join samples (random.choice (list-comp f [f (os.listdir samples)] (and (f.startswith "c64") (in (+ "-" t ".wav") f))))))
+  (os.path.join samples (random.choice (list-comp f [f (listdir-sorted samples)] (and (f.startswith "c64") (in (+ "-" t ".wav") f))))))
 
 (defn get-random-sample [subfolder starts-with]
-  (os.path.join samples subfolder (random.choice (list-comp f [f (os.listdir (os.path.join samples subfolder))] (and (f.startswith starts-with) (f.endswith ".wav"))))))
+  (os.path.join samples subfolder (random.choice (list-comp f [f (listdir-sorted (os.path.join samples subfolder))] (and (f.startswith starts-with) (f.endswith ".wav"))))))
 
 (defn fx-code [c] (- (ord (.lower c)) 96))
 
@@ -41,7 +42,7 @@
 
 (defn dir-to-samples [d itf] (list-comp
                                (itf.smp_add (Sample_File :name (os.path.basename f) :filename (os.path.join d f)))
-                               [f (os.listdir d)]
+                               [f (listdir-sorted d)]
                                (f.endswith ".wav")))
 
 (defn print-through [message p] (print message p) p)
