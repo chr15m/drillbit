@@ -10,13 +10,13 @@
 (import [chipvolver [load_definitions reproduce]])
 
 (defn sfxr-render [definition filename]
-  (.communicate (Popen ["./jsfxr/sfxr-to-wav" (os.path.join (os.environ.get "DEST" "") filename)] :stdout PIPE :stdin PIPE) (json.dumps definition))
+  (.communicate (Popen ["./jsfxr/sfxr-to-wav" filename] :stdout PIPE :stdin PIPE) (json.dumps definition))
   filename)
 
 (defn sfxr-genetics [startswith name &optional [rnd (random.Random)]]
   (let [[seed (.hexdigest (sha1 (str (.random rnd))))]]
     (stderr.write (+ (.join " " ["sfxr genetics:" seed startswith name]) "\n"))
-    (let [[wav-file-name (+ "samples/" name "-" (str seed) "-evolved.wav")]
+    (let [[wav-file-name (+ "samples/sfxr/" name "-" (str seed) "-evolved.wav")]
           [already-generated (os.path.isfile wav-file-name)]]
       (if (not already-generated)
         (let [[[sample-evolved-definition seed-used] (reproduce (load_definitions (glob (+ startswith "*.sfxr.json"))) :seed seed)]]

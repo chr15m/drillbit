@@ -7,12 +7,14 @@
   [sfxr [make-bleep sfxr-render]]
   [random [Random]]
   [collections [deque]]
-  [sys [argv stderr]])
+  [sys [argv stderr]]
+  [os.path [join]])
 
 (def channels 1)
 
 (defn make-sample-set [rnd it sampler]
-  (sampler "sfxr-bleep" (sfxr-render (make-bleep :r rnd) (+ (str (rnd.random)) "-bleep.wav"))) )
+  (let [[rendered (sfxr-render (make-bleep :r rnd) (join "samples" "sfxr" (+ (str (rnd.random)) "-bleep.wav")))]]
+    (sampler "sfxr-bleep" rendered)))
 
 (defn shuffled [rnd elements]
   (let [[copy (slice elements)]]

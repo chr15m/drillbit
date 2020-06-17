@@ -4,7 +4,6 @@
   [autotracker.utils [track-builder initial-hash extract-hash dir-sample-list get-wrapped]]
   [autotracker.it.pattern [empty]]
   [autotracker.compose [genetic-rhythm-loop]]
-  [sfxr [make-bleep sfxr-render]]
   [random [Random]]
   [math [sin]]
   [sys [argv stderr]])
