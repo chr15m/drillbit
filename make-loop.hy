@@ -87,7 +87,8 @@
 
 (defn usage [argv]
   (print "Usage:" (get argv 0) "BPM GENERATOR-1 [GENERATOR-2...]")
-  (print "Environment variables:\n")
+  (print "Environment variables:")
+  (print "\tHASH=...deadbeef\n")
   (print "Generators:")
   (for [k lookup]
     (print "\t" k))
