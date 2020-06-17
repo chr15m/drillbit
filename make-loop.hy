@@ -86,7 +86,7 @@
         (print (.join " " argv) :file infofile)))))
 
 (defn usage [argv]
-  (print "Usage:" (get argv 0) "BPM GENERATOR-1 [GENERATOR-2...]")
+  (print "Usage:" (get argv 0) "BPM GENERATOR-1 [GENERATOR-2...]\n")
   (print "Environment variables:")
   (print "\tHASH=...deadbeef\n")
   (print "Generators:")
